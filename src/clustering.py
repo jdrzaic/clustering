@@ -37,30 +37,27 @@ def initialize_r(x):
     k = x.shape[1]  # number of clusters
     i = random.randint(0, n - 1)
     r = numpy.zeros([k, k])
-    r[:, 0] = numpy.transpose(x[i, :])
+    r[:, 0] = x[i, :]
     c = numpy.zeros(n)
     for j in xrange(1, k):
         c += numpy.absolute(numpy.dot(x, r[:, j - 1]))
         i = numpy.argmin(c)
-        r[:, j] = numpy.transpose(x[i, :])
+        r[:, j] = x[i, :]
     return r
 
 
 def find_discrete_x(x_tl, r):
-    x = numpy.dot(x_tl, r)
-    n = x.shape[0]
-    k = x.shape[1]
+    x_tl = numpy.dot(x_tl, r)
+    n = x_tl.shape[0]
+    k = x_tl.shape[1]
     x = numpy.empty([n, k])
     for i in xrange(n):
         for j in xrange(k):
-            x[i, j] = 1 if j == numpy.argmax(x[i, :]) else 0
+            x[i, j] = 1 if j == numpy.argmax(x_tl[i, :]) else 0
     return x
 
 
-def main(argv):
-    dataset_file = argv[1]
-    clusters_num = int(argv[2])
-    epsilon = float(argv[3])
+def process_clustering(dataset_file, clusters_num, epsilon):
     points = data_reader.read(dataset_file)
     # W = affinity matrix
     w = data_reader.create_affinity(points)
@@ -84,6 +81,12 @@ def main(argv):
         theta = theta_s
         r = numpy.dot(u_s_t.transpose(), u.transpose())
     print x_disc
+
+def main(argv):
+    dataset_file = argv[1]
+    clusters_num = int(argv[2])
+    epsilon = float(argv[3])
+    process_clustering(dataset_file, clusters_num, epsilon)
 
 if __name__ == "__main__":
     main(sys.argv)
