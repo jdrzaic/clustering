@@ -3,6 +3,7 @@ import data_reader
 import numpy
 import scipy.linalg as la
 import random
+# import matplotlib.pyplot as plt
 
 
 def diagonalize(w):
@@ -15,7 +16,7 @@ def find_eigensolution_z(w, d, k):
     d_s = la.sqrtm(d)
     d_s_i = numpy.linalg.inv(d_s)
     t = numpy.dot(numpy.dot(d_s_i, w), d_s_i)
-    s, v = numpy.linalg.eig(t)
+    v, s, u_t = numpy.linalg.svd(t)
     idxs = s.argsort()[::-1] # get indexes for sorting eigenvalues and eigenvectors
     s = s[idxs]  # sort eigenvalues
     v = v[:, idxs]  # sort eigenvectors
@@ -27,7 +28,7 @@ def find_eigensolution_z(w, d, k):
 def normalize(z):
     m = numpy.diag(numpy.dot(z, z.transpose()))
     m = numpy.diag(m)
-    m = numpy.linalg.inv(numpy.sqrt(m))
+    m = numpy.linalg.inv(la.sqrtm(m))
     x = numpy.dot(m, z)
     return x
 
@@ -37,12 +38,12 @@ def initialize_r(x):
     k = x.shape[1]  # number of clusters
     i = random.randint(0, n - 1)
     r = numpy.zeros([k, k])
-    r[:, 0] = x[i, :]
+    r[:, 0] = x[i, :].transpose()
     c = numpy.zeros(n)
     for j in xrange(1, k):
         c += numpy.absolute(numpy.dot(x, r[:, j - 1]))
         i = numpy.argmin(c)
-        r[:, j] = x[i, :]
+        r[:, j] = x[i, :].transpose()
     return r
 
 
@@ -73,7 +74,7 @@ def process_clustering(dataset_file, clusters_num, epsilon):
     theta = 0.
     while True:
         x_disc = find_discrete_x(x_tl, r)
-        to_decomp = numpy.dot(x_disc.transpose(), x_disc)
+        to_decomp = numpy.dot(x_disc.transpose(), x_tl)
         u, omega, u_s_t = numpy.linalg.svd(to_decomp)
         theta_s = numpy.sum(omega)
         if abs(theta_s - theta) < epsilon:
@@ -87,7 +88,9 @@ def main(argv):
     clusters_num = int(argv[2])
     epsilon = float(argv[3])
     x = process_clustering(dataset_file, clusters_num, epsilon)
-    print x
+    for i in xrange(clusters_num):
+        print numpy.sum(x[:, i])
+
 
 if __name__ == "__main__":
     main(sys.argv)
