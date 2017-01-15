@@ -80,13 +80,14 @@ def process_clustering(dataset_file, clusters_num, epsilon):
             break
         theta = theta_s
         r = numpy.dot(u_s_t.transpose(), u.transpose())
-    print x_disc
+    return x_disc
 
 def main(argv):
     dataset_file = argv[1]
     clusters_num = int(argv[2])
     epsilon = float(argv[3])
-    process_clustering(dataset_file, clusters_num, epsilon)
+    x = process_clustering(dataset_file, clusters_num, epsilon)
+    print x
 
 if __name__ == "__main__":
     main(sys.argv)
