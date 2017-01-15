@@ -16,8 +16,9 @@ def find_eigensolution_z(w, d, k):
     d_s_i = numpy.linalg.inv(d_s)
     t = numpy.dot(numpy.dot(d_s_i, w), d_s_i)
     s, v = numpy.linalg.eig(t)
-    # idxs = s.argsort()[::-1] # get indexes for sorting eigenvalues and eigenvectors
-    # s = s[idxs]
+    idxs = s.argsort()[::-1] # get indexes for sorting eigenvalues and eigenvectors
+    s = s[idxs]  # sort eigenvalues
+    v = v[:, idxs]  # sort eigenvectors
     v = v[:, :k]
     s = numpy.diag(s)[:k, :k]
     return numpy.dot(d_s_i, v)
@@ -52,7 +53,7 @@ def find_discrete_x(x_tl, r):
     x = numpy.empty([n, k])
     for i in xrange(n):
         for j in xrange(k):
-            x[i, j] = True if j == numpy.argmax(x[i, :]) else False
+            x[i, j] = 1 if j == numpy.argmax(x[i, :]) else 0
     return x
 
 
@@ -82,10 +83,7 @@ def main(argv):
             break
         theta = theta_s
         r = numpy.dot(u_s_t.transpose(), u.transpose())
-    print numpy.sum(x_disc[:, 0])
-    print numpy.sum(x_disc[:, 1])
-    print numpy.sum(x_disc[:, 2])
-
+    print x_disc
 
 if __name__ == "__main__":
     main(sys.argv)
