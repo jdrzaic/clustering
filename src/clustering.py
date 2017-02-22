@@ -85,14 +85,7 @@ def process_clustering(dataset_file, clusters_num, epsilon):
     return x_disc, points
 
 
-def main(argv):
-    dataset_file = argv[1]
-    clusters_num = int(argv[2])
-    epsilon = float(argv[3])
-    x, points = process_clustering(dataset_file, clusters_num, epsilon)
-    for i in xrange(clusters_num):
-        print numpy.sum(x[:, i])
-    numpy.savetxt('data/res.txt', x)
+def visualize_result(points, clusters_num, x):
     n = len(points[0])
     colors = ['ro', 'go', 'bo', 'yo']
     for i in xrange(clusters_num):
@@ -104,6 +97,18 @@ def main(argv):
                 y_coord.append(points[1][j])
         plt.plot(x_coord, y_coord, colors[i % 4])
     plt.show()
+
+def main(argv):
+    # data formatted as ../data/example_man.txt
+    dataset_file = argv[1]
+    # number of clusters
+    clusters_num = int(argv[2])
+    # precision
+    epsilon = float(argv[3])
+    x, points = process_clustering(dataset_file, clusters_num, epsilon)
+    numpy.savetxt('data/res.txt', x)
+    # visualize
+    visualize_result(points, clusters_num, x)
 
 if __name__ == "__main__":
     main(sys.argv)
