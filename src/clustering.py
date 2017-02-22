@@ -13,8 +13,10 @@ def diagonalize(w):
 
 def find_eigensolution_z(w, d, k):
     # compute inverse of square root of D
-    d_s = la.sqrtm(d)
-    d_s_i = numpy.linalg.inv(d_s)
+    d = numpy.diagonal(d)
+    d_s = numpy.sqrt(d)
+    d_s_i = 1. / d_s
+    d_s_i = numpy.diag(d_s_i)
     t = numpy.dot(numpy.dot(d_s_i, w), d_s_i)
     v, s, u_t = numpy.linalg.svd(t)
     idxs = s.argsort()[::-1] # get indexes for sorting eigenvalues and eigenvectors
@@ -27,8 +29,9 @@ def find_eigensolution_z(w, d, k):
 
 def normalize(z):
     m = numpy.diag(numpy.dot(z, z.transpose()))
+    # m = numpy.diag(m)
+    m = 1. / (numpy.sqrt(m))
     m = numpy.diag(m)
-    m = numpy.linalg.inv(la.sqrtm(m))
     x = numpy.dot(m, z)
     return x
 
@@ -60,7 +63,7 @@ def find_discrete_x(x_tl, r):
 
 def process_clustering(dataset_file, clusters_num, epsilon):
     # points = data_reader.read(dataset_file)
-    points = data_reader.read_transposed_data(dataset_file)
+    points = data_reader.read(dataset_file)
     # W = affinity matrix
     w = data_reader.create_affinity(points)
     # D = Diag(W * I)
@@ -79,8 +82,6 @@ def process_clustering(dataset_file, clusters_num, epsilon):
         to_decomp = numpy.dot(x_disc.transpose(), x_tl)
         u, omega, u_s_t = numpy.linalg.svd(to_decomp)
         theta_s = numpy.sum(omega)
-        print("diff")
-        print(abs(theta - theta_s))
         if abs(theta_s - theta) < epsilon:
             break
         theta = theta_s
