@@ -23,6 +23,6 @@ def apply_gaussian(W):
     n = W.shape[0]
     for i in xrange(n):
         for j in xrange(i + 1, n):
-            W[i][j] = math.exp(-(W[i][j]) * W[i][j] / 2)
+            W[i][j] = math.exp(-W[i][j] * W[i][j] / 2)
             W[j][i] = W[i][j]
     return W
