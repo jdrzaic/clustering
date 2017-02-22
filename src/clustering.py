@@ -3,6 +3,7 @@ import data_reader
 import numpy
 import scipy.linalg as la
 import random
+import matplotlib.pyplot as plt
 
 
 def diagonalize(w):
@@ -59,7 +60,6 @@ def find_discrete_x(x_tl, r):
 
 def process_clustering(dataset_file, clusters_num, epsilon):
     points = data_reader.read(dataset_file)
-    print (points)
     # W = affinity matrix
     w = data_reader.create_affinity(points)
     # D = Diag(W * I)
@@ -72,6 +72,7 @@ def process_clustering(dataset_file, clusters_num, epsilon):
     r = initialize_r(x_tl)
     # initialize convergence monitoring factor
     theta = 0.
+    x_disc = None
     while True:
         x_disc = find_discrete_x(x_tl, r)
         to_decomp = numpy.dot(x_disc.transpose(), x_tl)
@@ -81,19 +82,28 @@ def process_clustering(dataset_file, clusters_num, epsilon):
             break
         theta = theta_s
         r = numpy.dot(u_s_t.transpose(), u.transpose())
-    return x_disc
+    return x_disc, points
 
 
 def main(argv):
     dataset_file = argv[1]
     clusters_num = int(argv[2])
     epsilon = float(argv[3])
-    x = process_clustering(dataset_file, clusters_num, epsilon)
-    print (x)
+    x, points = process_clustering(dataset_file, clusters_num, epsilon)
     for i in xrange(clusters_num):
         print numpy.sum(x[:, i])
     numpy.savetxt('data/res.txt', x)
-
+    n = len(points[0])
+    colors = ['ro', 'go', 'bo', 'yo']
+    for i in xrange(clusters_num):
+        x_coord = []
+        y_coord = []
+        for j in xrange(x.shape[0]):
+            if x[j][i] == 1:
+                x_coord.append(points[0][j])
+                y_coord.append(points[1][j])
+        plt.plot(x_coord, y_coord, colors[i % 4])
+    plt.show()
 
 if __name__ == "__main__":
     main(sys.argv)
