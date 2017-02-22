@@ -26,3 +26,8 @@ def apply_gaussian(W):
             W[i][j] = math.exp(-W[i][j] * W[i][j] / 2)
             W[j][i] = W[i][j]
     return W
+
+def read_transposed_data(data_file):
+    data = numpy.loadtxt(data_file)
+    data = data.transpose()
+    return data

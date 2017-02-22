@@ -59,7 +59,8 @@ def find_discrete_x(x_tl, r):
 
 
 def process_clustering(dataset_file, clusters_num, epsilon):
-    points = data_reader.read(dataset_file)
+    # points = data_reader.read(dataset_file)
+    points = data_reader.read_transposed_data(dataset_file)
     # W = affinity matrix
     w = data_reader.create_affinity(points)
     # D = Diag(W * I)
@@ -78,6 +79,8 @@ def process_clustering(dataset_file, clusters_num, epsilon):
         to_decomp = numpy.dot(x_disc.transpose(), x_tl)
         u, omega, u_s_t = numpy.linalg.svd(to_decomp)
         theta_s = numpy.sum(omega)
+        print("diff")
+        print(abs(theta - theta_s))
         if abs(theta_s - theta) < epsilon:
             break
         theta = theta_s
@@ -87,7 +90,7 @@ def process_clustering(dataset_file, clusters_num, epsilon):
 
 def visualize_result(points, clusters_num, x):
     n = len(points[0])
-    colors = ['ro', 'go', 'bo', 'yo']
+    colors = ['ro', 'go', 'bo', 'yo', 'co', 'mo', 'ko']
     for i in xrange(clusters_num):
         x_coord = []
         y_coord = []
@@ -95,7 +98,7 @@ def visualize_result(points, clusters_num, x):
             if x[j][i] == 1:
                 x_coord.append(points[0][j])
                 y_coord.append(points[1][j])
-        plt.plot(x_coord, y_coord, colors[i % 4])
+        plt.plot(x_coord, y_coord, colors[i % 7])
     plt.show()
 
 def main(argv):
@@ -106,7 +109,7 @@ def main(argv):
     # precision
     epsilon = float(argv[3])
     x, points = process_clustering(dataset_file, clusters_num, epsilon)
-    numpy.savetxt('data/res.txt', x)
+    # numpy.savetxt('data/res.txt', x)
     # visualize
     visualize_result(points, clusters_num, x)
 
