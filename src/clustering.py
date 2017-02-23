@@ -4,7 +4,7 @@ import numpy
 import scipy.linalg as la
 import random
 import matplotlib.pyplot as plt
-
+import image
 
 def diagonalize(w):
     ones_vector = numpy.ones(w.shape[0])
@@ -61,11 +61,9 @@ def find_discrete_x(x_tl, r):
     return x
 
 
-def process_clustering(dataset_file, clusters_num, epsilon):
-    # points = data_reader.read(dataset_file)
-    points = data_reader.read(dataset_file)
+def process_points(points, affinity, clusters_num, epsilon):
     # W = affinity matrix
-    w = data_reader.create_affinity(points)
+    w = affinity
     # D = Diag(W * I)
     d = diagonalize(w)
     # matrix to decompose
@@ -88,6 +86,10 @@ def process_clustering(dataset_file, clusters_num, epsilon):
         r = numpy.dot(u_s_t.transpose(), u.transpose())
     return x_disc, points
 
+def process_clustering(dataset_file, clusters_num, epsilon):
+    points = data_reader.read(dataset_file)
+    affinity = data_reader.create_affinity(points)
+    process_points(points, affinity, clusters_num, epsilon)
 
 def visualize_result(points, clusters_num, x):
     n = len(points[0])
@@ -115,4 +117,5 @@ def main(argv):
     visualize_result(points, clusters_num, x)
 
 if __name__ == "__main__":
-    main(sys.argv)
+    image.test_edge()
+    # main(sys.argv)
