@@ -4,7 +4,7 @@ import numpy
 import scipy.linalg as la
 import random
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
+import image
 
 
 def diagonalize(w):
@@ -62,10 +62,9 @@ def find_discrete_x(x_tl, r):
     return x
 
 
-def process_clustering(dataset_file, clusters_num, epsilon):
-    points = data_reader.read(dataset_file)
+def process_points(points, affinity, clusters_num, epsilon):
     # W = affinity matrix
-    w = data_reader.create_affinity(points)
+    w = affinity
     # D = Diag(W * I)
     d = diagonalize(w)
     # matrix to decompose
@@ -89,6 +88,12 @@ def process_clustering(dataset_file, clusters_num, epsilon):
     return x_disc, points
 
 
+def process_clustering(dataset_file, clusters_num, epsilon):
+    points = data_reader.read(dataset_file)
+    affinity = data_reader.create_affinity(points)
+    return process_points(points, affinity, clusters_num, epsilon)
+
+
 def visualize_result(points, clusters_num, x):
     n = len(points[0])
     colors = ['ro', 'go', 'bo', 'yo', 'co', 'mo', 'ko']
@@ -101,6 +106,7 @@ def visualize_result(points, clusters_num, x):
                 y_coord.append(points[1][j])
         plt.plot(x_coord, y_coord, colors[i % 7])
     plt.show()
+
 
 def main(argv):
     # data formatted as ../data/example_man.txt
@@ -115,4 +121,5 @@ def main(argv):
     visualize_result(points, clusters_num, x)
 
 if __name__ == "__main__":
+    # image.test_edge()
     main(sys.argv)

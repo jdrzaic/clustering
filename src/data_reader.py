@@ -8,6 +8,7 @@ def read(data_file):
 
 def create_affinity(coordinates):
     points_num = len(coordinates[0])  # number of points
+    # print(coordinates)
     W = numpy.zeros((points_num, points_num,))
     for i in xrange(points_num):
         for j in range(i + 1, points_num):
@@ -16,6 +17,7 @@ def create_affinity(coordinates):
             W[i][j] = numpy.linalg.norm(diff)
             W[j][i] = W[i][j]
     W = apply_gaussian(W)
+    # print(coordinates)
     return W
 
 
