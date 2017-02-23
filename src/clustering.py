@@ -4,6 +4,7 @@ import numpy
 import scipy.linalg as la
 import random
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 
 def diagonalize(w):
@@ -62,7 +63,6 @@ def find_discrete_x(x_tl, r):
 
 
 def process_clustering(dataset_file, clusters_num, epsilon):
-    # points = data_reader.read(dataset_file)
     points = data_reader.read(dataset_file)
     # W = affinity matrix
     w = data_reader.create_affinity(points)
